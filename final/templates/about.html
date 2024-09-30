@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+<style>
+    /* Global CSS */
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden; /* Prevent scrolling */
+    }
+    
+    .image-container {
+        max-width: 62%;
+        max-height: 100%;
+        overflow: hidden; /* Hide overflow */
+    }
+    
+    .image-container img {
+        width: 100%;
+        height: auto;
+        object-fit: contain; /* Maintain aspect ratio */
+        display: block;
+        margin: auto; /* Center the image horizontally */
+    }
+    
+    /* Button CSS */
+    .row-button {
+        text-decoration: none;
+    }
+    
+    .row-button button {
+        background-color: #1abc9c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        bottom: 5rem;
+        
+    }
+    
+    .row-button button i {
+        margin-right: 5px;
+    }
+    
+    /* Responsive CSS */
+    @media screen and (max-width: 768px) {
+        .image-container {
+            height: 70vh; /* Adjust height for smaller screens */
+        }
+        
+    }
+    
+    @media screen and (max-width: 576px) {
+        .image-container {
+            height: 50vh; /* Adjust height for even smaller screens */
+        }
+    
+        .row-button button {
+            padding: 8px 16px; /* Adjust button padding for smaller screens */
+            font-size: 16px; /* Adjust button font size for smaller screens */
+        }
+    }
+    
+    
+    
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+</head>
+<body>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='image2.png') }}" alt="About us image">
+        <div class="row-button">
+            <a href="{{ url_for('home') }}"><button type="button"><i class="fas fa-arrow-left"></i> Back</button></a>
+        </div>
+    </div>
+</body>
+</html>
