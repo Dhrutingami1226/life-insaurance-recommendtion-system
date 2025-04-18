@@ -5,20 +5,16 @@ from sklearn.tree import DecisionTreeClassifier
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = "secret_key"  # Set a secret key for session management
+app.secret_key = "secret_key" 
 
-# Load dataset
 dataset = pd.read_csv("D:/final/policy.csv")
 
-# Separate features and target
 X = dataset.iloc[:, [0, 1]].values
 y = dataset.iloc[:, 2].values
 
-# Fit the model
 model = DecisionTreeClassifier()
 model.fit(X, y)
 
-# Function to save user data to the database
 def save_to_database(name, email, password):
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
@@ -27,7 +23,6 @@ def save_to_database(name, email, password):
     conn.commit()
     conn.close()
 
-# Function to save feedback data to the database
 def save_feedback(name, email, feedback, rating):
     conn = sqlite3.connect('feedback.db')
     c = conn.cursor()
@@ -36,7 +31,6 @@ def save_feedback(name, email, feedback, rating):
     conn.commit()
     conn.close()
 
-# Function to fetch data from the users table
 def get_users_data():
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
@@ -45,7 +39,6 @@ def get_users_data():
     conn.close()
     return users_data
 
-# Function to fetch data from the feedback table
 def get_feedback_data():
     conn = sqlite3.connect('feedback.db')
     c = conn.cursor()
@@ -54,7 +47,6 @@ def get_feedback_data():
     conn.close()
     return feedback_data
 
-# Function to check user credentials against the database
 def check_user(email, password):
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
@@ -63,12 +55,10 @@ def check_user(email, password):
     conn.close()
     return user is not None
 
-# Define route for home page
 @app.route('/')
 def home():
     return render_template('front.html')
 
-# Define route for registration form
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -76,20 +66,16 @@ def register():
         email = request.form['email']
         password = request.form['password']
         
-        # Save user data to the database
         save_to_database(name, email, password)
         
-        # Redirect to login page after registration
         return redirect('/login')
     else:
         return render_template('register.html')
     
-    # Define route for about
 @app.route('/about', methods=['GET', 'POST'])
 def about():
      return render_template('about.html')
 
-# Define route for login form
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error_message = None
@@ -98,22 +84,16 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        # Check if the user exists in the database
         if check_user(email, password):
-            # Set session for logged-in user
             session['logged_in'] = True
             session['email'] = email
             
-            # Redirect to prediction page after successful login
             return redirect('/predict')
         else:
-            # Display error message for invalid credentials
             error_message = "Invalid email or password. Please try again."
     
-    # Render login template with error message
     return render_template('login.html', error=error_message)
 
-# Define route for admin page
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     error_message = None
@@ -122,17 +102,15 @@ def admin():
         email = request.form['email']
         password = request.form['password']
         
-        # Check if the provided email and password match the admin credentials
         if email == 'admin@gmail.com' and password == 'admin':
-            # Set session for admin
+
             session['admin_logged_in'] = True
-            return redirect('/data')  # Redirect to home page after admin login
+            return redirect('/data')  
         else:
             error_message = "Invalid admin credentials. Please try again."
 
     return render_template('admin.html', error=error_message)
 
-# Define route for feedback form
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
     if request.method == 'POST':
@@ -141,22 +119,18 @@ def feedback():
         feedback = request.form['feedback']
         rating = int(request.form['rating'])
         
-        # Save feedback data to the database
         save_feedback(name, email, feedback, rating)
         
-        # Redirect to prediction page
         return redirect('/predict')
     else:
         return render_template('feedback.html')
 
-# Define route to display all data and provide options to add/delete
 @app.route('/data')
 def view_data():
     users_data = get_users_data()
     feedback_data = get_feedback_data()
     return render_template('view_data.html', users_data=users_data, feedback_data=feedback_data)
 
-# Define route to add new user data
 @app.route('/add_user', methods=['POST'])
 def add_user():
     name = request.form['name']
@@ -172,7 +146,6 @@ def add_user():
     flash('User added successfully!', 'success')
     return redirect('/data')
 
-# Define route to delete user
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
     email = request.form['email']
@@ -184,7 +157,6 @@ def delete_user():
     flash('User deleted successfully!', 'success')
     return redirect('/data')
 
-# Define route for prediction page
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     error_message = request.args.get('error_message')
